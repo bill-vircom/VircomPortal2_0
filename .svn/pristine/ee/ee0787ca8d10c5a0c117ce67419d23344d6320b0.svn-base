@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vp_pages",
+  "info": {
+    "singularName": "vp-page",
+    "pluralName": "vp-pages",
+    "displayName": "VP_page",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "string",
+      "required": true
+    },
+    "uri": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      },
+      "type": "string"
+    },
+    "description": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "string"
+    },
+    "vp_assets": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::vp-asset.vp-asset",
+      "inversedBy": "vp_pages"
+    },
+    "name": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      },
+      "type": "string",
+      "required": true
+    }
+  }
+}
