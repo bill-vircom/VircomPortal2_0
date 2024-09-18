@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vp_alerts",
+  "info": {
+    "singularName": "vp-alert",
+    "pluralName": "vp-alerts",
+    "displayName": "vp_alert"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "key": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "description": {
+      "type": "blocks"
+    }
+  }
+}
