@@ -10,7 +10,7 @@ export default {
 <template>
   <div>
     <VCard elevation="0" class="mb-6">
-      <VCardText>{{ t("hello_world") }}</VCardText>
+      <VCardText>{{ $t("hello_world") }}</VCardText>
     </VCard>
 
     <VCard elevation="0" title="Create Awesome 🙌">

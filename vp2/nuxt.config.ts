@@ -3,7 +3,6 @@ import svgLoader from 'vite-svg-loader'
 import vuetify from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
@@ -17,6 +16,12 @@ export default defineNuxtConfig({
         href: '/logo.png',
       }],
     },
+  },
+
+  runtimeConfig: {
+    public: {
+      apiGraphQLUrl: process.env.NUXT_PUBLIC_API_GRAPHQL_URL,
+    }
   },
 
   devtools: {
@@ -111,6 +116,7 @@ export default defineNuxtConfig({
 
     build: {
       chunkSizeWarningLimit: 5000,
+      sourcemap: true
     },
 
     optimizeDeps: {
@@ -143,10 +149,10 @@ export default defineNuxtConfig({
   apollo: {
     clients: {
       default: {
-        httpEndpoint: 'http://localhost:1337/graphql',
-      },
+        httpEndpoint: process.env.NUXT_PUBLIC_API_GRAPHQL_URL as string
+      }
     },
   },
 
-  modules: ['@vueuse/nuxt', '@nuxtjs/device', '@pinia/nuxt', '@nuxtjs/apollo'],
+  modules: ['@vueuse/nuxt', '@nuxtjs/apollo', '@nuxtjs/device', '@pinia/nuxt'],
 })

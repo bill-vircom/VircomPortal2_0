@@ -12,6 +12,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@apollo/client": "3.11.4",
     "@casl/ability": "6.7.1",
     "@casl/vue": "2.2.2",
     "@floating-ui/dom": "1.6.3",

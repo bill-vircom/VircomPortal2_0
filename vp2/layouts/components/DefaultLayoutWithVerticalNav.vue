@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useConfigStore } from '@core/stores/config'
 import { themeConfig } from '@themeConfig'
+import oldNavItems from '@/navigation/horizontal'
 
 // Components
 import Footer from '@/layouts/components/Footer.vue'
@@ -14,8 +15,17 @@ import { useContentStore } from '@/store/contentStore'
 const configStore = useConfigStore()
 const { navItems } = useContentStore()
 
+
+navItems.forEach((item) => {
+  if (item.title == "index") item.title = "Home"
+  if (item.title == "second_page") item.title = "Second page"
+})
+
 // ℹ️ Provide animation name for vertical nav collapse icon.
 const verticalNavHeaderActionAnimationName = ref<null | 'rotate-back-180' | 'rotate-180'>(null)
+
+// const selectedItem = ref('')
+const items = ['Programming', 'Design', 'Vue', 'Vuetify']
 
 watch([
   () => configStore.isVerticalNavCollapsed,
@@ -41,6 +51,27 @@ watch([
           <VIcon icon="ri-menu-line" />
         </IconBtn>
 
+        <div class="d-none d-sm-flex w-50 ">
+          <VBtn color="primary" class="mr-8">
+            {{ $t("button_all_customers") }}
+          </VBtn>
+
+          <VAutocomplete
+            prepend-inner-icon="ri-search-line"
+            :items="items"
+            :placeholder="$t('placeholder_search')"
+            density="compact"
+            clearable
+            class="mr-2"
+          />
+
+          <VBtn
+            icon="ri-user-add-line"
+            color="secondary"
+            rounded="sm"
+          />
+        </div>
+
         <VSpacer />
 
         <div class="d-flex gap-2">
@@ -62,7 +93,7 @@ watch([
     </template>
 
     <!-- 👉 Customizer -->
-    <!-- <TheCustomizer /> -->
+    <AppSwitcher />
   </VerticalNavLayout>
 </template>
 
