@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import avatar1 from '@images/avatars/avatar-1.png'
+import { useAuthStore } from '~/store/auth'
+const { logUserOut } = useAuthStore();
 
 const userProfileList = [
   { type: 'divider' },
@@ -122,9 +124,9 @@ const userProfileList = [
                 color="error"
                 size="small"
                 append-icon="ri-logout-box-r-line"
-                :to="{ name: 'login' }"
+                @click="logUserOut"
               >
-                Logout
+                {{$t("button_logout")}}
               </VBtn>
             </VListItem>
           </PerfectScrollbar>

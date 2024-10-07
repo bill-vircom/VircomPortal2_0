@@ -21,6 +21,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiGraphQLUrl: process.env.NUXT_PUBLIC_API_GRAPHQL_URL,
+      sessionStorageKey: process.env.NUXT_PUBLIC_SESSION_STORAGE_KEY
     }
   },
 
