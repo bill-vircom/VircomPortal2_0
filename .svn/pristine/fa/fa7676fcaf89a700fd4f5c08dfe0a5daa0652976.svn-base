@@ -90,7 +90,7 @@ export const useCustomerStore = defineStore('configs', {
           }
         })
 
-        const result = await  $fetch<Alert[]>(url.href, {
+        const result = await  $fetch<Alert[]>(runtimeConfig.public.vp2Backend.concat(endPoints.alerts), {
           headers: {
             Authorization: `Bearer ${token}`
           }

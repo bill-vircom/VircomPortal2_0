@@ -87,8 +87,12 @@ const totalItems = computed(() => alertsState.value.alerts.length || 0);
         @update:page="currentPage = $event; fetchAlerts()"
         @update:items-per-page="itemsPerPage = $event; fetchAlerts()"
       >
+        <template #item.title="{ item }">
+          {{ item.alertTitle }}
+        </template>
+
         <template #item.customer="{ item }">
-          <VChip class="font-weight-medium" size="small">{{ item.userThatGeneratedAlert }}</VChip>
+          <VChip v-if="item.userThatGeneratedAlert" class="font-weight-medium" size="small">{{ item.userThatGeneratedAlert }}</VChip>
         </template>
 
         <template #item.parent="{ item }">
