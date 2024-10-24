@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vp_tags",
+  "info": {
+    "singularName": "vp-tag",
+    "pluralName": "vp-tags",
+    "displayName": "VP_tag",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "name": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "string"
+    },
+    "key": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "string",
+      "required": true,
+      "minLength": 4
+    }
+  }
+}

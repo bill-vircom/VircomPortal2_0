@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vp_apps",
+  "info": {
+    "singularName": "vp-app",
+    "pluralName": "vp-apps",
+    "displayName": "VP_app"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  }
+}
