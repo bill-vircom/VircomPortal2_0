@@ -1,0 +1,16 @@
+# NUXT_PUBLIC_API_GRAPHQL_URL=http://127.0.0.1:1337/graphql
+NUXT_PUBLIC_API_GRAPHQL_URL=https://strapi.qaex2k16.qasavvybox.com/graphql
+
+# NUXT_PUBLIC_AUTH_SITE=https://auth.qaex2k16.qasavvybox.com
+# NUXT_PUBLIC_API_SITE=https://vircomportal20test.qaex2k16.qasavvybox.com/MCPWebAPI
+# NUXT_PUBLIC_VP2_BACKEND=https://vp2api.qaex2k16.qasavvybox.com
+
+NUXT_PUBLIC_SESSION_STORAGE_KEY=USER_JWT_TOKEN
+NUXT_PUBLIC_AUTH_SITE=https://localhost:7139
+NUXT_PUBLIC_API_SITE=http://localhost:35999
+NUXT_PUBLIC_VP2_BACKEND=https://localhost:7130
+
+# APPLICATION SWITCHER URL
+NUXT_PUBLIC_PSA_SYNC=https://vircomportal20test.qaex2k16.qasavvybox.com/PSASync
+NUXT_PUBLIC_PP_MANAGER=https://vircomportal20test.qaex2k16.qasavvybox.com/Dashboard
+NUXT_PUBLIC_VIRCOM_PORTAL=https://mcpwebsite2.qaex2k16.qasavvybox.com

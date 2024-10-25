@@ -2,7 +2,6 @@
 import { ref, onBeforeMount, watch, computed } from 'vue';
 import { useConfigStore } from '@core/stores/config';
 import { themeConfig } from '@themeConfig';
-const { t } = useI18n({ useScope: "global" })
 
 // Components
 import Footer from '@/layouts/components/Footer.vue';
@@ -17,16 +16,6 @@ import { useCustomerStore } from '@/store/customerStore';
 const configStore = useConfigStore();
 const { navItems } = useContentStore();
 const customerStore = useCustomerStore();
-
-const localisedNavItem = computed(() => navItems.map((item) => {
-  if (item.to.name === "index") {
-    item.title = "Dashboard"
-  }
-  if (item.to.name === "alerts") {
-    item.title = "Alerts"
-  }
-  return item
-}))
 
 // ℹ️ Provide animation name for vertical nav collapse icon.
 const verticalNavHeaderActionAnimationName = ref<null | 'rotate-back-180' | 'rotate-180'>(null);
@@ -56,7 +45,7 @@ watch([() => configStore.isVerticalNavCollapsed, () => configStore.isAppRTL], ([
 </script>
 
 <template>
-  <VerticalNavLayout :nav-items="localisedNavItem">
+  <VerticalNavLayout :nav-items="navItems">
     <!-- 👉 navbar -->
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">

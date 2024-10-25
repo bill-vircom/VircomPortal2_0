@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import AlertsTable from '@/components/AlertsTable.vue';
-const { t } = useI18n({ useScope: "global" })
 
 const listItems = ref([
   { value: 2, icon: "ri-prohibited-fill" },
@@ -13,7 +12,7 @@ const listItems = ref([
 
 <template>
   <div class="mb-6">
-    <VCardTitle>{{ t("alerts_categories") }}</VCardTitle>
+    <VCardTitle>{{ $t("alerts_categories") }}</VCardTitle>
     <VRow>
       <VCol v-for="item in listItems">
         <VCard>

@@ -82,15 +82,6 @@ export const useCustomerStore = defineStore('configs', {
         const token = window.sessionStorage.getItem(runtimeConfig.public.sessionStorageKey as string)
 
         const url = new URL(runtimeConfig.public.vp2Backend.concat(endPoints.alerts))
-        const data = {
-          alertType: "Unknown",
-          alertSeverity: "Low",
-          source: "VircomPortal",
-          grouping: "EmailActivity",
-          triggerDomain: "string",
-          userThatGeneratedAlert: "string",
-          timeGenerated: "2024-10-25T14:42:23.218Z"
-        };
 
         Object.keys(paginate).forEach((key) => {
           const typedKey = key as keyof typeof paginate
@@ -103,8 +94,7 @@ export const useCustomerStore = defineStore('configs', {
           headers: {
             Authorization: `Bearer ${token}`
           },
-          method: "POST",
-          body: JSON.stringify(data)
+          method: "POST"
         })
 
         if (result) {
