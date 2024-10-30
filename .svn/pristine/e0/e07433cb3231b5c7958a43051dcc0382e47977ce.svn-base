@@ -8,7 +8,7 @@ const customerStore = useCustomerStore();
 const { t, locale } = useI18n({ useScope: 'global' });
 
 const currentPage = ref(1);
-const itemsPerPage = ref(5);
+const itemsPerPage = ref(10);
 
 
 const headers = computed(() => [
@@ -19,20 +19,14 @@ const headers = computed(() => [
   { title: t('alertTableTitle_parent'), key: 'userThatGeneratedAlert' },
   { title: t('alertTableTitle_organization'), key: 'organization' },
   { title: t("alertTableTitle_details"), key: 'alertDetail' },
-  { title: t("alertTableTitle_status"), key: 'status' },
   { title: t("alertTableTitle_dateAndTime"), key: 'timeGenerated' },
+  { title: t("alertTableTitle_status"), key: 'status' },
   { title: "", key: 'actions' },
 ]);
 
-const itemsPerPageOptions = ref([
-  { title: "5", value: 5},
-  { title: "10", value: 10 },
-  { title: "20", value: 20 },
-  { title: "50", value: 50 },
-])
-
 
 const fetchAlerts = (uniqueSourceId?: string) => {
+  console.log("called")
   customerStore.fetchAlerts({ 
     pPageNumber: currentPage.value, 
     pPageSize: itemsPerPage.value,
@@ -97,13 +91,12 @@ const totalItems = computed(() => alertsState.value.alerts.length || 0);
 
     <VCardText>
       <VDataTableServer
-        :items-length="200"
+        :items-length="totalItems"
         :items="alerts"
         :headers="headers"
         :items-per-page="itemsPerPage"
         :loading="loading"
         :search="search"
-        :items-per-page-options="itemsPerPageOptions"
         @update:page="currentPage = $event; fetchAlerts()"
         @update:items-per-page="itemsPerPage = $event; fetchAlerts()"
       >
@@ -139,15 +132,6 @@ const totalItems = computed(() => alertsState.value.alerts.length || 0);
           {{ item.alertDetail }}
         </template>
 
-        <template #item.status="{ item }">
-          <VChip
-            class="font-weight-medium"
-            size="small"
-          >
-            {{ item.reported }}
-          </VChip>
-        </template>
-
         <template #item.timeGenerated="{ item }">
           <VChip class="font-weight-medium" size="small">
             {{ Intl.DateTimeFormat(locale, {
@@ -157,6 +141,15 @@ const totalItems = computed(() => alertsState.value.alerts.length || 0);
                 hour: 'numeric',
                 minute: 'numeric'
               }).format(new Date(item.timeGenerated)) }}
+          </VChip>
+        </template>
+
+        <template #item.status="{ item }">
+          <VChip
+            class="font-weight-medium"
+            size="small"
+          >
+            {{ item.reported }}
           </VChip>
         </template>
 

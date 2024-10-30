@@ -12,12 +12,10 @@ import NavBarI18n from '@core/components/I18n.vue';
 import { VerticalNavLayout } from '@layouts';
 import { useContentStore } from '@/store/contentStore';
 import { useCustomerStore } from '@/store/customerStore';
-import { useAuthStore } from '@/store/authStore';
 
 const configStore = useConfigStore();
 const { navItems } = useContentStore();
 const customerStore = useCustomerStore();
-const authData = useAuthStore();
 const { t } = useI18n({ useScope: "global" })
 
 const localisedNavItem = computed(() => navItems.map((item) => {
@@ -37,9 +35,6 @@ const verticalNavHeaderActionAnimationName = ref<null | 'rotate-back-180' | 'rot
 onBeforeMount(() => {
   customerStore.fetchProofpointCustomers()
 })
-
-const { getAuthUser } = storeToRefs(authData)
-const shoudlDisplaySelector = computed(() => getAuthUser.value.adminType === ADMIN_TYPE.CHANNEL_ADMIN)
 
 const {
   selectProofPointCustomer,
@@ -61,6 +56,7 @@ watch(proofPointCustomer, (value) => {
   if (value.customers)
     customers.value = flattenCustomers(value.customers)
 
+  console.log(customers.value)
   loading.value = value.loading
 }, { deep: true })
 
@@ -86,7 +82,7 @@ watch([() => configStore.isVerticalNavCollapsed, () => configStore.isAppRTL], ([
         </IconBtn>
 
         <div class="d-none d-sm-flex w-50 ">
-          <VBtn color="primary" class="mr-8" @click="clearAutocomplete" v-if="shoudlDisplaySelector">
+          <VBtn color="primary" class="mr-8" @click="clearAutocomplete">
             {{ $t("button_all_customers") }}
           </VBtn>
 
@@ -102,7 +98,6 @@ watch([() => configStore.isVerticalNavCollapsed, () => configStore.isAppRTL], ([
             density="compact"
             clearable
             class="mr-2"
-            v-if="shoudlDisplaySelector"
           />
 
           <VBtn
@@ -112,10 +107,6 @@ watch([() => configStore.isVerticalNavCollapsed, () => configStore.isAppRTL], ([
             rounded="sm"
             :disabled="true"
           />
-
-          <VChip color="primary" v-if="!shoudlDisplaySelector">
-            {{ getAuthUser.displayname }}
-          </VChip>
         </div>
 
         <VSpacer />

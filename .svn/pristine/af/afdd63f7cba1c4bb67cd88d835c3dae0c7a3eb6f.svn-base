@@ -8,7 +8,7 @@ const customerStore = useCustomerStore();
 const { t, locale } = useI18n({ useScope: 'global' });
 
 const currentPage = ref(1);
-const itemsPerPage = ref(5);
+const itemsPerPage = ref(10);
 
 
 const headers = computed(() => [
@@ -23,13 +23,6 @@ const headers = computed(() => [
   { title: t("alertTableTitle_dateAndTime"), key: 'timeGenerated' },
   { title: "", key: 'actions' },
 ]);
-
-const itemsPerPageOptions = ref([
-  { title: "5", value: 5},
-  { title: "10", value: 10 },
-  { title: "20", value: 20 },
-  { title: "50", value: 50 },
-])
 
 
 const fetchAlerts = (uniqueSourceId?: string) => {
@@ -97,13 +90,12 @@ const totalItems = computed(() => alertsState.value.alerts.length || 0);
 
     <VCardText>
       <VDataTableServer
-        :items-length="200"
+        :items-length="totalItems"
         :items="alerts"
         :headers="headers"
         :items-per-page="itemsPerPage"
         :loading="loading"
         :search="search"
-        :items-per-page-options="itemsPerPageOptions"
         @update:page="currentPage = $event; fetchAlerts()"
         @update:items-per-page="itemsPerPage = $event; fetchAlerts()"
       >

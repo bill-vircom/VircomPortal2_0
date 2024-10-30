@@ -47,8 +47,3 @@ interface Alert {
     triggerConditions: string,
     timeGenerated: string
 }
-
-type CustomerSelectorAsset = {
-    customer: string;
-    value: string
-}

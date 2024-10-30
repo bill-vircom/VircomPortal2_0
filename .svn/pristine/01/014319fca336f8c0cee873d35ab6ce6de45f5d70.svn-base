@@ -10,7 +10,7 @@ const userProfileList = [
     type: 'navItem',
     icon: 'ri-user-line',
     title: 'Profile',
-    href: '/profile',
+    href: '#',
   },
   {
     type: 'navItem',

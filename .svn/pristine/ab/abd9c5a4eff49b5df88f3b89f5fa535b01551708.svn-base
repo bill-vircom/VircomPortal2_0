@@ -114,19 +114,7 @@ export const useCustomerStore = defineStore('configs', {
       } finally {
         this.alertsState.loading = false
       }
-    },
-    flattenCustomers(customers: ProofpointCustomer[]): CustomerSelectorAsset[] {
-      function flatten(customer: ProofpointCustomer): CustomerSelectorAsset[] {
-          const current = [{ customer: customer.customer, value: customer.uniqueSourceId }];
-          const children = customer.children.length > 0
-              ? customer.children.flatMap(flatten)
-              : [];
-  
-          return current.concat(children);
-      }
-      return customers.flatMap(flatten);
-  }
-  
+    }
   },
   getters: {
     getSelectedCustomer: (state) => state.proofPointCustomer.selectedCustomer,
