@@ -41,12 +41,14 @@ onBeforeMount(() => {
 const { getAuthUser } = storeToRefs(authData)
 const shoudlDisplaySelector = computed(() => [
   ADMIN_TYPE.CHANNEL_ADMIN,
-  ADMIN_TYPE.STRATEGIC_PARTNER_ADMIN
-].includes(getAuthUser.value.adminType as any))
+  ADMIN_TYPE.CHANNEL_ADMIN,
+  ADMIN_TYPE.OEM_PARTNER_ADMIN
+].includes(getAuthUser.value.adminType))
 
 const {
   selectProofPointCustomer,
   clearSelectedProofPointCustomer,
+  flattenCustomers
 } = customerStore
 const { proofPointCustomer } = storeToRefs(customerStore)
 
@@ -61,7 +63,7 @@ const loading = ref(false)
 
 watch(proofPointCustomer, (value) => {
   if (value.customers)
-    customers.value = value.flatenCustomerList
+    customers.value = flattenCustomers(value.customers)
 
   loading.value = value.loading
 }, { deep: true })

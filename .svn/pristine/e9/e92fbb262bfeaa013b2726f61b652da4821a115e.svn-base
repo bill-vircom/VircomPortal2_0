@@ -83,6 +83,7 @@ export const useCustomerStore = defineStore('configs', {
     async fetchAlertsCount(uniqueSourceId?: string) {
       try {
         const runtimeConfig = useRuntimeConfig();
+        console.log({uniqueSourceId})
 
         const url = new URL(runtimeConfig.public.vp2Backend.concat(endPoints.alertsCount, uniqueSourceId ? `/${uniqueSourceId}` : ''))
 

@@ -47,6 +47,7 @@ const shoudlDisplaySelector = computed(() => [
 const {
   selectProofPointCustomer,
   clearSelectedProofPointCustomer,
+  flattenCustomers
 } = customerStore
 const { proofPointCustomer } = storeToRefs(customerStore)
 
@@ -61,7 +62,7 @@ const loading = ref(false)
 
 watch(proofPointCustomer, (value) => {
   if (value.customers)
-    customers.value = value.flatenCustomerList
+    customers.value = flattenCustomers(value.customers)
 
   loading.value = value.loading
 }, { deep: true })

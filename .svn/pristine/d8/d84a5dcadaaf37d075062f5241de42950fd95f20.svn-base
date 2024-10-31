@@ -3,19 +3,9 @@ import { useCustomerStore } from '@/store/customerStore';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+const search = ref("");
 const customerStore = useCustomerStore();
 const { t, locale } = useI18n({ useScope: 'global' });
-const { alertsState, getSelectedCustomer, findCustomer } = storeToRefs(customerStore)
-
-const headers = computed(() => [
-  { title: t('alertTableTitle_level'), key: 'severity' },
-  { title: t("alertTableTitle_type"), key: 'alertType' },
-  { title: t('alertTableTilte_title'), key: 'alertTitle' },
-  { title: t('alertTableTitle_parent'), key: 'parent' },
-  { title: t('alertTableTitle_organization'), key: 'organization' },
-  { title: t("alertTableTitle_dateAndTime"), key: 'timeGenerated' },
-  { title: "", key: 'actions' },
-]);
 
 const currentPage = ref(1);
 const itemsPerPage = ref(5);
@@ -25,6 +15,16 @@ const columnFilters = ref<Record<string, string[]>>({
 });
 
 
+const headers = computed(() => [
+  { title: t('alertTableTitle_level'), key: 'severity' },
+  { title: t("alertTableTitle_type"), key: 'alertType' },
+  { title: t('alertTableTilte_title'), key: 'alertTitle' },
+  { title: t('alertTableTitle_parent'), key: 'userThatGeneratedAlert' },
+  { title: t('alertTableTitle_organization'), key: 'organization' },
+  { title: t("alertTableTitle_dateAndTime"), key: 'timeGenerated' },
+  { title: "", key: 'actions' },
+]);
+
 const itemsPerPageOptions = ref([
   { title: "5", value: 5},
   { title: "10", value: 10 },
@@ -33,39 +33,35 @@ const itemsPerPageOptions = ref([
 ])
 
 
-const fetchAlerts = () => {
+const fetchAlerts = (uniqueSourceId?: string) => {
   customerStore.fetchAlerts({ 
     pPageNumber: currentPage.value, 
     pPageSize: itemsPerPage.value,
-    uniqueSourceId: getSelectedCustomer.value
+    uniqueSourceId
   });
 };
 
-const fetchAlertsCount = () => {
-  customerStore.fetchAlertsCount(getSelectedCustomer.value);
-}
-
-const  alertLoadedKey = "alertsLoaded"
-
-window.addEventListener("beforeunload", () => {
-  window.sessionStorage.removeItem(alertLoadedKey)
-})
-
 onBeforeMount(() => {
-  const hasAlreadyLoaded = window.sessionStorage.getItem(alertLoadedKey)
-  if (!hasAlreadyLoaded) {
-    fetchAlertsCount()
-    fetchAlerts()  
-    window.sessionStorage.setItem(alertLoadedKey, "true")
-  }
-})
-
-
-watch(getSelectedCustomer, () => {
-  fetchAlertsCount()
   fetchAlerts()
 })
 
+const { alertsState, getSelectedCustomer } = storeToRefs(customerStore)
+
+const alerts = ref([] as Alert[])
+const loading = ref(false)
+
+watch(alertsState, (value) => {
+  if (value.alerts)
+    alerts.value = value.alerts
+  
+  loading.value = value.loading
+}, { deep: true })
+
+watch(getSelectedCustomer, (value) => {
+  fetchAlerts(value)
+})
+
+const totalItems = computed(() => alertsState.value.alerts.length || 0);
 </script>
 
 <template>
@@ -80,7 +76,20 @@ watch(getSelectedCustomer, () => {
 
     <VCardText>
       <VRow justify="space-between">
+        <VCol cols="8" md="4">
+          <VTextField
+            v-model="search"
+            :label="t('search')"
+            :placeholder="t('placeholder_search')"
+            append-inner-icon="ri-search-line"
+            single-line
+            hide-details
+            dense
+            outlined
+          />
+        </VCol>
         <VCol cols="4" md="2" class="d-flex justify-end align-center">
+          <IconBtn size="small"><VIcon icon="ri-filter-2-line" /></IconBtn>
           <IconBtn size="small"><VIcon icon="ri-printer-line" /></IconBtn>
           <IconBtn size="small"><VIcon icon="ri-download-2-line" /></IconBtn>
         </VCol>
@@ -89,11 +98,12 @@ watch(getSelectedCustomer, () => {
 
     <VCardText>
       <VDataTableServer
-        :items-length="alertsState.count"
-        :items="alertsState.alerts"
+        :items-length="200"
+        :items="alerts"
         :headers="headers"
         :items-per-page="itemsPerPage"
-        :loading="alertsState.loading"
+        :loading="loading"
+        :search="search"
         :items-per-page-options="itemsPerPageOptions"
         @update:page="currentPage = $event; fetchAlerts()"
         @update:items-per-page="itemsPerPage = $event; fetchAlerts()"
@@ -149,8 +159,8 @@ watch(getSelectedCustomer, () => {
           {{ item.alertType }}
         </template>
 
-        <template #item.parent="{ item }">
-          {{ findCustomer(item.uniqueParentSourceID)?.parentDomain }}
+        <template #item.userThatGeneratedAlert="{ item }">
+          {{ item.userThatGeneratedAlert }}
         </template>
 
         <template #item.organization="{ item }">

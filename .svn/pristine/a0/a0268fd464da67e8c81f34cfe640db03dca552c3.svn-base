@@ -5,13 +5,13 @@ import { useI18n } from 'vue-i18n';
 
 const customerStore = useCustomerStore();
 const { t, locale } = useI18n({ useScope: 'global' });
-const { alertsState, getSelectedCustomer, findCustomer } = storeToRefs(customerStore)
+const { alertsState, getSelectedCustomer } = storeToRefs(customerStore)
 
 const headers = computed(() => [
   { title: t('alertTableTitle_level'), key: 'severity' },
   { title: t("alertTableTitle_type"), key: 'alertType' },
   { title: t('alertTableTilte_title'), key: 'alertTitle' },
-  { title: t('alertTableTitle_parent'), key: 'parent' },
+  { title: t('alertTableTitle_parent'), key: 'userThatGeneratedAlert' },
   { title: t('alertTableTitle_organization'), key: 'organization' },
   { title: t("alertTableTitle_dateAndTime"), key: 'timeGenerated' },
   { title: "", key: 'actions' },
@@ -42,12 +42,15 @@ const fetchAlerts = () => {
 };
 
 const fetchAlertsCount = () => {
-  customerStore.fetchAlertsCount(getSelectedCustomer.value);
+  // We should be able to count the alerts of a specific user
+  customerStore.fetchAlertsCount();
 }
 
 const  alertLoadedKey = "alertsLoaded"
 
 window.addEventListener("beforeunload", () => {
+  console.log("beforeunload fired")
+
   window.sessionStorage.removeItem(alertLoadedKey)
 })
 
@@ -149,8 +152,8 @@ watch(getSelectedCustomer, () => {
           {{ item.alertType }}
         </template>
 
-        <template #item.parent="{ item }">
-          {{ findCustomer(item.uniqueParentSourceID)?.parentDomain }}
+        <template #item.userThatGeneratedAlert="{ item }">
+          {{ item.userThatGeneratedAlert }}
         </template>
 
         <template #item.organization="{ item }">

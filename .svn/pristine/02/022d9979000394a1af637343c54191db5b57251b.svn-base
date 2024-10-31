@@ -4,7 +4,6 @@ interface customerState {
   proofPointCustomer: {
     customers: ProofpointCustomer[],
     loading: boolean,
-    flatenCustomerList: CustomerSelectorAsset[]
     selectedCustomer?: string
   }
   customersList: {
@@ -29,8 +28,7 @@ export const useCustomerStore = defineStore('configs', {
   state: (): customerState => ({
     proofPointCustomer: {
       customers: [],
-      loading: false,
-      flatenCustomerList: []
+      loading: false
     },
     customersList: {
       customers: [],
@@ -66,7 +64,6 @@ export const useCustomerStore = defineStore('configs', {
 
         if (result) {
             this.proofPointCustomer.customers = result
-            this.proofPointCustomer.flatenCustomerList = this.flattenCustomerList(result) 
         }
       } catch(error) {
         console.log(error)
@@ -128,14 +125,9 @@ export const useCustomerStore = defineStore('configs', {
         this.alertsState.loading = false
       }
     },
-    flattenCustomerList(customers: ProofpointCustomer[]): CustomerSelectorAsset[] {
+    flattenCustomers(customers: ProofpointCustomer[]): CustomerSelectorAsset[] {
       function flatten(customer: ProofpointCustomer): CustomerSelectorAsset[] {
-          const current: CustomerSelectorAsset[] = [{
-            parentDomain: customer.parentDomain,
-            primaryDomain: customer.primaryDomain,
-            customer: customer.customer, 
-            value: customer.uniqueSourceId,  
-          }];
+          const current = [{ customer: customer.customer, value: customer.uniqueSourceId }];
           const children = customer.children.length > 0
               ? customer.children.flatMap(flatten)
               : [];
@@ -162,13 +154,6 @@ export const useCustomerStore = defineStore('configs', {
       })
       const loading = state.alertsState.loading
       return { alerts, loading }
-    },
-    getCustomerSelectorList: (state) => state.proofPointCustomer.flatenCustomerList,
-    findCustomer: 
-      (state) => 
-        (uniqueSourceId: string) => 
-          state.proofPointCustomer
-            .flatenCustomerList
-            .find(customer => customer.value === uniqueSourceId)
+    }
   },
 })

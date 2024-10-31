@@ -4,7 +4,6 @@ interface customerState {
   proofPointCustomer: {
     customers: ProofpointCustomer[],
     loading: boolean,
-    flatenCustomerList: CustomerSelectorAsset[]
     selectedCustomer?: string
   }
   customersList: {
@@ -14,23 +13,20 @@ interface customerState {
   alertsState: {
     alerts: Alert[]
     loading: boolean;
-    count: number;
   }
 }
 
 const endPoints = {
     customerSelector: "/Customer/CustomerSelector",
     customer: "/Customer",
-    alerts: "/Alerts",
-    alertsCount: "/Alerts/Count"
+    alerts: "/Alerts"
 };
 
 export const useCustomerStore = defineStore('configs', {
   state: (): customerState => ({
     proofPointCustomer: {
       customers: [],
-      loading: false,
-      flatenCustomerList: []
+      loading: false
     },
     customersList: {
       customers: [],
@@ -38,8 +34,7 @@ export const useCustomerStore = defineStore('configs', {
     },
     alertsState: {
       loading: false,
-      alerts: [],
-      count: 0
+      alerts: []
     }
   }),
   actions: {
@@ -48,10 +43,9 @@ export const useCustomerStore = defineStore('configs', {
           this.customersList.loading = true
           const runtimeConfig = useRuntimeConfig();
           const response = await useAuthFetch<Customer[]>(runtimeConfig.public.vp2Backend.concat(endPoints.customer))
-          console.log(response)
 
-          if (response) {
-              this.customersList.customers = response
+          if (response.data.value) {
+              this.customersList.customers = response.data.value
           }
           this.customersList.loading = false
         } catch {
@@ -62,11 +56,11 @@ export const useCustomerStore = defineStore('configs', {
       try {
         this.proofPointCustomer.loading = true
         const runtimeConfig = useRuntimeConfig();
+        const token = window.sessionStorage.getItem(runtimeConfig.public.sessionStorageKey as string)
         const result = await useAuthFetch<ProofpointCustomer[]>(runtimeConfig.public.vp2Backend.concat(endPoints.customerSelector))
 
         if (result) {
             this.proofPointCustomer.customers = result
-            this.proofPointCustomer.flatenCustomerList = this.flattenCustomerList(result) 
         }
       } catch(error) {
         console.log(error)
@@ -80,23 +74,6 @@ export const useCustomerStore = defineStore('configs', {
     clearSelectedProofPointCustomer() {
       this.proofPointCustomer.selectedCustomer = undefined
     },
-    async fetchAlertsCount(uniqueSourceId?: string) {
-      try {
-        const runtimeConfig = useRuntimeConfig();
-
-        const url = new URL(runtimeConfig.public.vp2Backend.concat(endPoints.alertsCount, uniqueSourceId ? `/${uniqueSourceId}` : ''))
-
-        const result = await useAuthFetch<number>(url.href, {
-          method: uniqueSourceId ? "POST" : "GET",
-        })
-
-        if (result) {
-          this.alertsState.count = result
-        }
-      } catch (error) {
-        console.error(error)
-      }      
-    },
     async fetchAlerts (paginate : { 
       pPageNumber?: number,
       pPageSize?: number,
@@ -105,7 +82,10 @@ export const useCustomerStore = defineStore('configs', {
       try {
         this.alertsState.loading = true
         const runtimeConfig = useRuntimeConfig();
+        const token = window.sessionStorage.getItem(runtimeConfig.public.sessionStorageKey as string)
+
         const url = new URL(runtimeConfig.public.vp2Backend.concat(endPoints.alerts, paginate.uniqueSourceId ? `/${paginate.uniqueSourceId}` : ''))
+        const data = {};
 
         Object.keys(paginate).forEach((key) => {
           const typedKey = key as keyof typeof paginate
@@ -128,14 +108,9 @@ export const useCustomerStore = defineStore('configs', {
         this.alertsState.loading = false
       }
     },
-    flattenCustomerList(customers: ProofpointCustomer[]): CustomerSelectorAsset[] {
+    flattenCustomers(customers: ProofpointCustomer[]): CustomerSelectorAsset[] {
       function flatten(customer: ProofpointCustomer): CustomerSelectorAsset[] {
-          const current: CustomerSelectorAsset[] = [{
-            parentDomain: customer.parentDomain,
-            primaryDomain: customer.primaryDomain,
-            customer: customer.customer, 
-            value: customer.uniqueSourceId,  
-          }];
+          const current = [{ customer: customer.customer, value: customer.uniqueSourceId }];
           const children = customer.children.length > 0
               ? customer.children.flatMap(flatten)
               : [];
@@ -162,13 +137,6 @@ export const useCustomerStore = defineStore('configs', {
       })
       const loading = state.alertsState.loading
       return { alerts, loading }
-    },
-    getCustomerSelectorList: (state) => state.proofPointCustomer.flatenCustomerList,
-    findCustomer: 
-      (state) => 
-        (uniqueSourceId: string) => 
-          state.proofPointCustomer
-            .flatenCustomerList
-            .find(customer => customer.value === uniqueSourceId)
+    }
   },
 })
